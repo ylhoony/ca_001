@@ -12,7 +12,11 @@ const pg = require('pg');
 const bcrypt = require('bcryptjs');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
+const moment = require('moment');
+moment().format();
 
+let now = moment().unix();
+// console.log(now);
 
 // Config
 
@@ -25,15 +29,15 @@ app.use('/api', router);
 const password = 'testPassword'; // testing bcrypt
 
 bcrypt.genSalt(10, (err, salt) => {
-  console.log('salt beginning: ', salt);
+  // console.log('salt beginning: ', salt);
   bcrypt.hash(password, salt, (err, hash) => {
       // Store hash in your password DB.
-      console.log('salt in hash: ', salt);
-      console.log(hash);
+      // console.log('salt in hash: ', salt);
+      // console.log(hash);
   });
 });
 
-// Before login
+// Before login + Users
 router.post('/', (req, res) => {
   res.send('this is home');
 })
@@ -50,6 +54,19 @@ router.post('/signup', (req, res) => {
 router.get('/login', (req, res) => {
   res.send('this is login')
 })
+
+
+
+// Users
+router.get('/users', (req, res) => {
+  knex.select().from('users')
+  .then((data) => {
+    console.log(data);
+    res.json(data);
+    console.log(moment(data.created_at).utc());
+  })
+})
+
 
 
 

@@ -10,9 +10,14 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "babel-cli": "^6.24.0",
+    "babel-preset-env": "^1.2.1",
     "webpack": "^2.2.1"
   },
   "dependencies": {
+    "express": "^4.15.2",
+    "jsonwebtoken": "^7.3.0",
+    "moment": "^2.17.1",
     "vue": "^2.2.3"
   }
 }

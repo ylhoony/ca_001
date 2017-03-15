@@ -6,9 +6,10 @@ exports.up = function(knex, Promise) {
       t.increments('id').primary();
       t.string('first_name');
       t.string('last_name');
-      t.string('email');
+      t.string('email').unique();
       t.string('password');
-      t.timestamps();
+      t.bigInteger('created_at');
+      t.bigInteger('updated_at');
     })
   ])
 };
