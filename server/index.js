@@ -22,7 +22,7 @@ let now = moment().unix();
 
 
 // Express Route Setup
-app.use('/api', router);
+app.use('/api/v1', router);
 
 
 // bcrypt test
