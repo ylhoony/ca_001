@@ -22,10 +22,11 @@ exports.up = function(knex, Promise) {
     }),
     knex.schema.createTable('users', (t) => {
       t.increments('id').primary();
+      t.string('email').unique();
       t.string('firstName');
       t.string('lastName');
-      t.string('email').unique();
       t.string('password');
+      t.boolean('verifiedEmail');
       t.bigInteger('createdAt');
       t.bigInteger('updatedAt');
     }),
@@ -37,8 +38,13 @@ exports.up = function(knex, Promise) {
       t.string('address2');
       t.string('city');
       t.string('state');
+      t.integer('countryId');
+      t.foreign('countryId').references('country.id');
+      t.string('phone');
+      t.string('fax');
       t.string('email');
-      t.string('password');
+      t.integer('defaultCurrencyId')
+      t.foreign('defaultCurrencyId').references('currency.id');
       t.bigInteger('createdAt');
       t.bigInteger('updatedAt');
     }),
@@ -48,7 +54,7 @@ exports.up = function(knex, Promise) {
       t.foreign('companyId').references('companies.id');
       t.integer('userId');
       t.foreign('userId').references('users.id');
-      t.inetger('companyDba');
+      t.string('userLevelId');
       t.bigInteger('created_at');
       t.bigInteger('updated_at');
     })
