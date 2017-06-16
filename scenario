@@ -1,0 +1,37 @@
+i have one email, but would like to log into multiple companies
+ok,
+one user to many companies.
+but, i do not want to maintain all the different sites.
+it is different thing.
+let's say i create 2 sites.
+
+i am creating one company system - ABC company.
+now, i registered the site with my email address - abc@test.com
+when I create ABC company, I am generating database for ABC company
+database name - dbABC.
+
+and now i create second company system - XYZ company
+with same email address.
+so what do i do with the email.
+
+there is central database only for users -
+and recording which companies they are connected to.
+and for each company, i need to know the database i created
+
+so, central database, i need
+- users - login info
+- client companies --> should have database address
+- bridge table for client company and users
+
+i login with one email
+then, i see the dashboard that i should select
+which company i am going to connect.
+when i select the company,
+it looks for the database name and connect to it, then pull the information.
+
+this will have advantage over the data load issue.
+but, if I update the software, how do i maintain or upgrade the thousands of databases.
+looking at the knex.js, as long as i know the access to the database
+there should be a way to create or delete the data field systematically.
+
+so, when deployment happens, it should include database checking.
