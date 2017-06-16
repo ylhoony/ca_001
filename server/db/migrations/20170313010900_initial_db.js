@@ -153,11 +153,55 @@ exports.up = function(knex, Promise) {
       t.string('productName');
       t.string('productDescription');
       t.string('productTechDescription'); // Technical Description
-      t.float('defaultRrp'); // Default MSRP or RRP
-      t.float('defaultWsp'); // Default Wholesale Price
-      t.float('cost'); // Inventory Unit Value
+      t.float('safetyStock'); // Safety Stock Qty
+      t.float('reorderPoint'); // Inventory Alarm
       t.boolean('isActive');
       t.boolean('isNotForSale');
+      t.integer('dropshipTypeId'); // product or service
+      t.foreign('dropshipTypeId').references('dropshipTypes.id');
+      t.bigInteger('created_at');
+      t.bigInteger('updated_at');
+    }),
+    // Sales Price List that is to be assigned to the customer by default
+    // This will be displayed at default when sales order entry area is open
+    // or assigned to the Sales Channel for integration
+    knex.schema.createTable('salesPriceLevels', (t) => {
+      t.increments('id').primary();
+      t.integer('companyId');
+      t.foreign('companyId').references('companies.id');
+      t.string('salesPriceLevelName'); // RRP & WSP should be created at default
+      t.boolean('isDefault');
+      t.boolean('isActive');
+      t.bigInteger('created_at');
+      t.bigInteger('updated_at');
+    }),
+    // Sales Prices by Products and Price Level
+    knex.schema.createTable('product_salesPriceLevel', (t) => {
+      t.increments('id').primary();
+      t.integer('companyId');
+      t.foreign('companyId').references('companies.id');
+      t.integer('productId');
+      t.foreign('productId').references('products.id');
+      t.integer('salesPriceLevelId');
+      t.foreign('salesPriceLevelId').references('salesPriceLevels.id');
+      t.integer('threshold'); // volume pricing to be applied from this number
+      t.float('salesPrice');
+      t.boolean('isActive');
+      t.bigInteger('created_at');
+      t.bigInteger('updated_at');
+    }),
+    // Inventory List supplied by different suppliers
+    knex.schema.createTable('productInventories', (t) => {
+      t.increments('id').primary();
+      t.integer('companyId');
+      t.foreign('companyId').references('companies.id');
+      t.integer('productId'); // from Products Table
+      t.foreign('productId').references('products.id');
+      t.string('vendorSku'); // Vendor's SKU - optional
+      t.string('productName'); // can be copied over
+      t.string('productDescription'); // can be copied over
+      t.string('productTechDescription'); // Technical Description
+
       t.integer('dropshipTypeId'); // product or service
       t.foreign('dropshipTypeId').references('dropshipTypes.id');
       t.bigInteger('created_at');
@@ -187,33 +231,7 @@ exports.up = function(knex, Promise) {
       t.bigInteger('created_at');
       t.bigInteger('updated_at');
     }),
-    // Sales Price List that is to be assigned to the customer by default
-    // This will be displayed at default when sales order entry area is open
-    // or assigned to the Sales Channel for integration
-    knex.schema.createTable('salesPriceLevels', (t) => {
-      t.increments('id').primary();
-      t.integer('companyId');
-      t.foreign('companyId').references('companies.id');
-      t.string('salesPriceLevelName');
-      t.boolean('isDefault');
-      t.boolean('isActive');
-      t.bigInteger('created_at');
-      t.bigInteger('updated_at');
-    }),
-    knex.schema.createTable('product_salesPriceLevel', (t) => {
-      t.increments('id').primary();
-      t.integer('companyId');
-      t.foreign('companyId').references('companies.id');
-      t.integer('productId');
-      t.foreign('productId').references('products.id');
-      t.integer('salesPriceLevelId');
-      t.foreign('salesPriceLevelId').references('salesPriceLevels.id');
-      t.integer('threshold'); // volume pricing to be applied from this number
-      t.float('salesPrice');
-      t.boolean('isActive');
-      t.bigInteger('created_at');
-      t.bigInteger('updated_at');
-    }),
+    //
     knex.schema.createTable('customerCompanies', (t) => {
       t.increments('id').primary();
       t.integer('companyId');
