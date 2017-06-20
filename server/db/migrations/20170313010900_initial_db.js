@@ -155,6 +155,7 @@ exports.up = function(knex, Promise) {
       t.string('productTechDescription'); // Technical Description
       t.float('safetyStock'); // Safety Stock Qty
       t.float('reorderPoint'); // Inventory Alarm
+      t.float('maxInventoryQty') //
       t.boolean('isActive');
       t.boolean('isNotForSale');
       t.integer('dropshipTypeId'); // product or service
@@ -192,6 +193,8 @@ exports.up = function(knex, Promise) {
       t.bigInteger('updated_at');
     }),
     // Inventory List supplied by different suppliers
+    // If the note should be added, it might have to have the hitory
+    // , meaning it should have separate table with time record.
     knex.schema.createTable('productInventories', (t) => {
       t.increments('id').primary();
       t.integer('companyId');
@@ -203,6 +206,7 @@ exports.up = function(knex, Promise) {
       t.string('productDescription'); // can be copied over
       t.string('productTechDescription'); // Technical Description
       t.float('purchaseUnitCost'); // Default Purchase Price
+      t.integer('deliveryLeadTime'); // Lead Time from order confirmation to delivery
       t.float('inventoryQty'); // Inventory Quantity
       t.float('inventoryTotalValue'); // Inventory Total Value
       t.boolean('isDefalutSupplier'); // If this is main supplier for dropship
@@ -261,6 +265,7 @@ exports.up = function(knex, Promise) {
       t.string('note');
       t.string('paymentTerms'); // Should add options
       t.string('freightTerms'); // Should add options
+      t.boolean('isActive');
       t.bigInteger('created_at');
       t.bigInteger('updated_at');
     }),
@@ -290,6 +295,7 @@ exports.up = function(knex, Promise) {
       t.boolean('isShippingAddress');
       t.boolean('isDefaultBilling');
       t.boolean('isDefaultShipping');
+      t.boolean('isActive');
       t.bigInteger('created_at');
       t.bigInteger('updated_at');
     }),
@@ -312,6 +318,7 @@ exports.up = function(knex, Promise) {
       t.string('fax');
       t.string('email');
       t.string('note');
+      t.boolean('isActive');
       t.bigInteger('created_at');
       t.bigInteger('updated_at');
     }),
@@ -338,6 +345,7 @@ exports.up = function(knex, Promise) {
       t.foreign('defaultCurrencyId').references('currency.id');
       t.string('note');
       t.boolean('isCarrier');
+      t.boolean('isActive');
       t.bigInteger('created_at');
       t.bigInteger('updated_at');
     }),
@@ -367,6 +375,7 @@ exports.up = function(knex, Promise) {
       t.boolean('isShippingAddress');
       t.boolean('isDefaultBilling');
       t.boolean('isDefaultShipping');
+      t.boolean('isActive');
       t.bigInteger('created_at');
       t.bigInteger('updated_at');
     }),
@@ -376,6 +385,73 @@ exports.up = function(knex, Promise) {
       t.foreign('companyId').references('companies.id');
       t.integer('supplierCompanyId');
       t.foreign('supplierCompanyId').references('supplierCompanies.id');
+      t.string('firstName');
+      t.string('lastName');
+      t.string('title');
+      t.string('address1');
+      t.string('address2');
+      t.string('city');
+      t.string('state');
+      t.integer('countryId');
+      t.foreign('countryId').references('country.id');
+      t.string('phone');
+      t.string('fax');
+      t.string('email');
+      t.string('note');
+      t.boolean('isActive');
+      t.bigInteger('created_at');
+      t.bigInteger('updated_at');
+    }),
+    // Sales Order Information
+    knex.schema.createTable('orders', (t) => {
+      t.increments('id').primary();
+      t.integer('companyId');
+      t.foreign('companyId').references('companies.id');
+      t.integer('orderId'); // System Generated Order ID
+      t.string('orderNumber'); // Sequential Order Number with Prefix (if exists)
+      t.integer('customerCompanyId');
+      t.foreign('customerCompanyId').references('customerCompanies.id');
+      t.integer('customerBillingAddressId');
+      t.foreign('customerBillingAddressId').references('customerCompanyAddresses.id');
+      t.integer('customerShippingAddressId');
+      t.foreign('customerShippingAddressId').references('customerCompanyAddresses.id');
+      // Billing
+      t.string('billingFirstName');
+      t.string('billingLastName');
+      t.string('title');
+      t.string('address1');
+      t.string('address2');
+      t.string('city');
+      t.string('state');
+      t.integer('countryId');
+      t.foreign('countryId').references('country.id');
+      t.string('phone');
+      t.string('fax');
+      t.string('email');
+      // Shipping
+      t.string('firstName');
+      t.string('lastName');
+      t.string('title');
+      t.string('address1');
+      t.string('address2');
+      t.string('city');
+      t.string('state');
+      t.integer('countryId');
+      t.foreign('countryId').references('country.id');
+      t.string('phone');
+      t.string('fax');
+      t.string('email');
+      t.string('note');
+      t.bigInteger('created_at');
+      t.bigInteger('updated_at');
+    }),
+    // Sales Order Product Line Information
+    knex.schema.createTable('orderLines', (t) => {
+      t.increments('id').primary();
+      t.integer('companyId');
+      t.foreign('companyId').references('companies.id');
+      t.integer('orderId'); // System Generated Order ID
+      t.string('orderNumber'); // Sequential Order Number with Prefix (if exists)
       t.string('firstName');
       t.string('lastName');
       t.string('title');
