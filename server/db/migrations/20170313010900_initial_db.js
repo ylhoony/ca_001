@@ -176,6 +176,7 @@ exports.up = function(knex, Promise) {
       t.bigInteger('updated_at');
     }),
     // Sales Prices by Products and Price Level
+    // How are we going to handle volume pricing?
     knex.schema.createTable('product_salesPriceLevel', (t) => {
       t.increments('id').primary();
       t.integer('companyId');
@@ -201,9 +202,10 @@ exports.up = function(knex, Promise) {
       t.string('productName'); // can be copied over
       t.string('productDescription'); // can be copied over
       t.string('productTechDescription'); // Technical Description
-
-      t.integer('dropshipTypeId'); // product or service
-      t.foreign('dropshipTypeId').references('dropshipTypes.id');
+      t.float('purchaseUnitCost'); // Default Purchase Price
+      t.float('inventoryQty'); // Inventory Quantity
+      t.float('inventoryTotalValue'); // Inventory Total Value
+      t.boolean('isDefalutSupplier'); // If this is main supplier for dropship
       t.bigInteger('created_at');
       t.bigInteger('updated_at');
     }),
@@ -231,7 +233,7 @@ exports.up = function(knex, Promise) {
       t.bigInteger('created_at');
       t.bigInteger('updated_at');
     }),
-    //
+    // Customer/Buyer information
     knex.schema.createTable('customerCompanies', (t) => {
       t.increments('id').primary();
       t.integer('companyId');
@@ -313,6 +315,7 @@ exports.up = function(knex, Promise) {
       t.bigInteger('created_at');
       t.bigInteger('updated_at');
     }),
+    // Supplier Information
     knex.schema.createTable('supplierCompanies', (t) => {
       t.increments('id').primary();
       t.integer('companyId');
