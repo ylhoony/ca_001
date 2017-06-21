@@ -213,6 +213,25 @@ exports.up = function(knex, Promise) {
       t.bigInteger('created_at');
       t.bigInteger('updated_at');
     }),
+    // Shipping Boxes - TO BE UPDATED
+    knex.schema.createTable('productShippingBoxes', (t) => {
+      t.increments('id').primary();
+      t.integer('companyId');
+      t.foreign('companyId').references('companies.id');
+      t.integer('productId'); // from Products Table
+      t.foreign('productId').references('products.id');
+      t.string('vendorSku'); // Vendor's SKU - optional
+      t.string('productName'); // can be copied over
+      t.string('productDescription'); // can be copied over
+      t.string('productTechDescription'); // Technical Description
+      t.float('purchaseUnitCost'); // Default Purchase Price
+      t.integer('deliveryLeadTime'); // Lead Time from order confirmation to delivery
+      t.float('inventoryQty'); // Inventory Quantity
+      t.float('inventoryTotalValue'); // Inventory Total Value
+      t.boolean('isDefalutSupplier'); // If this is main supplier for dropship
+      t.bigInteger('created_at');
+      t.bigInteger('updated_at');
+    }),
     // Sales Channel defines how the order was placed or received
     knex.schema.createTable('salesChannels', (t) => {
       t.increments('id').primary();
@@ -402,19 +421,58 @@ exports.up = function(knex, Promise) {
       t.bigInteger('created_at');
       t.bigInteger('updated_at');
     }),
+    // Shipping Carrier - simply to generate the list of Shipping Carriers
+    // It is optional to likn to the supplier information filterd by 'isCarrier'
+    knex.schema.createTable('shippingCarriers', (t) => {
+      t.increments('id').primary();
+      t.integer('companyId');
+      t.foreign('companyId').references('companies.id');
+      t.integer('supplierCompanyId');
+      t.foreign('supplierCompanyId').references('supplierCompanies.id');
+      t.string('shippingCarrierName');
+      t.string('note');
+      t.boolean('isActive');
+      t.bigInteger('created_at');
+      t.bigInteger('updated_at');
+    }),
+    knex.schema.createTable('shippingServices', (t) => {
+      t.increments('id').primary();
+      t.integer('companyId');
+      t.foreign('companyId').references('companies.id');
+      t.integer('shippingCarrierId');
+      t.foreign('shippingCarrierId').references('shippingCarriers.id');
+      t.string('shippingServiceName');
+      t.boolean('isActive');
+      t.bigInteger('created_at');
+      t.bigInteger('updated_at');
+    }),
     // Sales Order Information
     knex.schema.createTable('orders', (t) => {
       t.increments('id').primary();
       t.integer('companyId');
       t.foreign('companyId').references('companies.id');
       t.integer('orderId'); // System Generated Order ID
+      t.integer('masterOrderId'); // System Generated Order ID
       t.string('orderNumber'); // Sequential Order Number with Prefix (if exists)
+      t.string('orderReferenceId'); // Manually Entered Order Reference ID
+      t.string('customerPo'); // Customer PO Number
       t.integer('customerCompanyId');
       t.foreign('customerCompanyId').references('customerCompanies.id');
       t.integer('customerBillingAddressId');
       t.foreign('customerBillingAddressId').references('customerCompanyAddresses.id');
       t.integer('customerShippingAddressId');
       t.foreign('customerShippingAddressId').references('customerCompanyAddresses.id');
+      t.bigInteger('requestedShipDate'); // Requested Shipping Date
+      t.bigInteger('confirmedShipDate'); // Confirmed Shipping Date
+      t.bigInteger('expectedShipDate'); // Expected Shipping Date
+      t.bigInteger('actualShipDate'); // Actual Shipping Date
+      t.integer('shippingCarrierId'); // Shipping Carrier Selected
+      t.foreign('shippingCarrierId').references('shippingCarriers.id');
+      t.integer('shippingServiceId'); // Shipping Service Selected
+      t.foreign('shippingServiceId').references('shippingServices.id');
+      t.float('subTotal'); // Order line subtotal
+      t.float('shippingCharge');
+      t.float('taxTotal');
       // Billing
       t.string('billingFirstName');
       t.string('billingLastName');
